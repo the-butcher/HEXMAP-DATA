@@ -34,6 +34,13 @@ import com.igorion.report.value.FieldTypes;
 import com.igorion.type.json.impl.JsonTypeImplHexmapDataRoot;
 import com.igorion.util.impl.Storage;
 
+/**
+ * reads the EMS csv file and creates a HEXMAP compatible structure from it
+ *
+ * @author h.fleischer
+ * @since 19.02.2022
+ *
+ */
 public class HexmapControlParser00IncidenceEms {
 
     public static final String TOTAL = "TOTAL";
