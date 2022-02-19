@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.igorion.app.impl.C19Application;
 import com.igorion.hexmap.location.Location;
 import com.igorion.hexmap.twitter.IncidenceTweetFormatter;
@@ -98,8 +97,8 @@ public class HexmapControlParser02IncidenceBezirk {
         }
 
         fileRoot.addKeyset("Bezirk", districtMapSorted);
-        fileRoot.addIdx("cases", 0, 5000);
-        fileRoot.addIdx("fatal", 0, 5000);
+        fileRoot.addIdx("cases", 0, 5000, false);
+        fileRoot.addIdx("fatal", 0, 5000, false);
         fileRoot.setIndx(0);
 
         List<String> dateKeys = new ArrayList<>(dataRoot.getDateKeys());
@@ -128,9 +127,10 @@ public class HexmapControlParser02IncidenceBezirk {
 
         }
 
-        String hexmapFilePath = Storage.FOLDER_TARGET + "/hexmap-data-02-incidence-bezirk.json";
-        new ObjectMapper().writeValue(new File(hexmapFilePath), fileRoot); // .writerWithDefaultPrettyPrinter()
+//        String hexmapFilePath = Storage.FOLDER_TARGET + "/hexmap-data-02-incidence-bezirk.json";
+//        new ObjectMapper().writeValue(new File(hexmapFilePath), fileRoot); // .writerWithDefaultPrettyPrinter()
 
+        Storage.store(fileRoot);
         new IncidenceTweetFormatter("###", "Österreich, Fallzahlen nach Bezirken.").format(fileRoot);
 
     }

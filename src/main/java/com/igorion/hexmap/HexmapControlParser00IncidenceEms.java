@@ -93,7 +93,7 @@ public class HexmapControlParser00IncidenceEms {
 
         JsonTypeImplHexmapDataRoot fileRoot = new JsonTypeImplHexmapDataRoot("hexmap-data-00-incidence-ems.json");
         fileRoot.addKeyset("Bundesland", Location.KEYSET_PROVINCE);
-        fileRoot.addIdx("cases", 0, 5000);
+        fileRoot.addIdx("cases", 0, 5000, false);
         fileRoot.setIndx(0);
 
         List<String> dateKeys = new ArrayList<>(dataRoot.getDateKeys());

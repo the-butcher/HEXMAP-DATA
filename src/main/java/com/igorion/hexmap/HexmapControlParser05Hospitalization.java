@@ -84,18 +84,18 @@ public class HexmapControlParser05Hospitalization {
         fileRootIcu.addKeyset("Bundesland", Location.KEYSET_PROVINCE);
         fileRootReg.addKeyset("Bundesland", Location.KEYSET_PROVINCE);
 
-        fileRootIcu.addIdx("hsp___low", 0, 1); // 10
-        fileRootIcu.addIdx("hsp__med1", 0, 1); // 25
-        fileRootIcu.addIdx("hsp__med2", 0, 1); // 33
-        fileRootIcu.addIdx("hsp__high", 0, 1); // 50
-        fileRootIcu.addIdx("Intensivstation", 0, 1);
+        fileRootIcu.addIdx("hsp___low", 0, 1, true); // 10
+        fileRootIcu.addIdx("hsp__med1", 0, 1, true); // 25
+        fileRootIcu.addIdx("hsp__med2", 0, 1, true); // 33
+        fileRootIcu.addIdx("hsp__high", 0, 1, true); // 50
+        fileRootIcu.addIdx("Intensivstation", 0, 1, false);
         fileRootIcu.setIndx(4);
 
-        fileRootReg.addIdx("hsp___low", 0, 1); // 04
-        fileRootReg.addIdx("hsp__med1", 0, 1); // 08
-        fileRootReg.addIdx("hsp__med2", 0, 1); // 11
-        fileRootReg.addIdx("hsp__high", 0, 1); // 30
-        fileRootReg.addIdx("Normalstation", 0, 1);
+        fileRootReg.addIdx("hsp___low", 0, 1, true); // 04
+        fileRootReg.addIdx("hsp__med1", 0, 1, true); // 08
+        fileRootReg.addIdx("hsp__med2", 0, 1, true); // 11
+        fileRootReg.addIdx("hsp__high", 0, 1, true); // 30
+        fileRootReg.addIdx("Normalstation", 0, 1, false);
         fileRootReg.setIndx(4);
 
         List<String> dateKeys = new ArrayList<>(dataRoot.getDateKeys());
@@ -120,7 +120,7 @@ public class HexmapControlParser05Hospitalization {
                 fileRootReg.addData(dateKey00, key00, 0, 0.04);
                 fileRootReg.addData(dateKey00, key00, 1, 0.04);
                 fileRootReg.addData(dateKey00, key00, 2, 0.03);
-                fileRootReg.addData(dateKey00, key00, 3, 0.19);
+                fileRootReg.addData(dateKey00, key00, 3, 0.04);
                 fileRootReg.addData(dateKey00, key00, 4, dataRoot.getValue(dateKey00, key00, 1));
 
             }
@@ -129,8 +129,7 @@ public class HexmapControlParser05Hospitalization {
 
         System.out.println(dateKeys.get(dateKeys.size() - 1));
 
-        Storage.store(fileRootIcu);
-        Storage.store(fileRootReg);
+        Storage.store(fileRootIcu, fileRootReg);
 
     }
 

@@ -22,7 +22,6 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.igorion.app.impl.C19Application;
 import com.igorion.hexmap.location.Location;
 import com.igorion.http.IHttpRequest;
@@ -301,10 +300,10 @@ public class HexmapControlParser03VaccinationGemeinde {
         JsonTypeImplHexmapDataRoot fileRoot = new JsonTypeImplHexmapDataRoot("hexmap-data-03-vacc-gemeinde.json");
 
         fileRoot.addKeyset("Gemeinde", municipalityMapSorted);
-        fileRoot.addIdx("1.Dosis", 0, 1);
-        fileRoot.addIdx("2.Dosis", 0, 1);
-        fileRoot.addIdx("3.Dosis", 0, 1);
-        fileRoot.addIdx("Zertifikate", 0, 1);
+        fileRoot.addIdx("1.Dosis", 0, 1, false);
+        fileRoot.addIdx("2.Dosis", 0, 1, false);
+        fileRoot.addIdx("3.Dosis", 0, 1, false);
+        fileRoot.addIdx("Zertifikate", 0, 1, false);
         fileRoot.setIndx(1);
 
         List<String> dateKeys = new ArrayList<>(dataRoot.getDateKeys());
@@ -340,8 +339,10 @@ public class HexmapControlParser03VaccinationGemeinde {
 
         }
 
-        String hexmapFilePath = Storage.FOLDER_TARGET + "/hexmap-data-03-vacc-gemeinde.json";
-        new ObjectMapper().writeValue(new File(hexmapFilePath), fileRoot); // .writerWithDefaultPrettyPrinter().writerWithDefaultPrettyPrinter()
+//        String hexmapFilePath = Storage.FOLDER_TARGET + "/hexmap-data-03-vacc-gemeinde.json";
+//        new ObjectMapper().writeValue(new File(hexmapFilePath), fileRoot); // .writerWithDefaultPrettyPrinter().writerWithDefaultPrettyPrinter()
+
+        Storage.store(fileRoot);
 
 //        praemieSet.forEach(System.out::println);
         System.out.println("praemieSet: " + praemieSet.size());

@@ -50,7 +50,7 @@ public class FtpHandlerImpl implements IFtpHandler {
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
             ftpClient.setFileTransferMode(FTP.STREAM_TRANSFER_MODE);
 
-            ftpClient.setControlKeepAliveTimeout(300);
+//            ftpClient.setControlKeepAliveTimeout(1000);
             ftpClient.enterLocalPassiveMode();
 
             for (IFtpFileRoute fileRoute : fileRoutes) {

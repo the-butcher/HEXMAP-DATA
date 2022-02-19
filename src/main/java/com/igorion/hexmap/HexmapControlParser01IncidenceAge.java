@@ -16,7 +16,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.igorion.app.impl.C19Application;
 import com.igorion.hexmap.location.Location;
 import com.igorion.hexmap.twitter.IncidenceTweetFormatter;
@@ -85,7 +84,7 @@ public class HexmapControlParser01IncidenceAge {
         JsonTypeImplHexmapDataRoot fileRoot = new JsonTypeImplHexmapDataRoot("hexmap-data-01-incidence-age.json");
         fileRoot.addKeyset("Bundesland", Location.KEYSET_PROVINCE);
         fileRoot.addKeyset("Altersgruppe", Population.KEYSET_AGE_GROUP);
-        fileRoot.addIdx("Fälle", 0, 5000);
+        fileRoot.addIdx("Fälle", 0, 5000, false);
         fileRoot.setIndx(0);
 
         List<String> dateKeys = new ArrayList<>(dataRoot.getDateKeys());
@@ -111,9 +110,10 @@ public class HexmapControlParser01IncidenceAge {
 
         }
 
-        String hexmapFilePath = Storage.FOLDER_TARGET + "/hexmap-data-01-incidence-age.json";
-        new ObjectMapper().writeValue(new File(hexmapFilePath), fileRoot); // .writerWithDefaultPrettyPrinter()
+//        String hexmapFilePath = Storage.FOLDER_TARGET + "/hexmap-data-01-incidence-age.json";
+//        new ObjectMapper().writeValue(new File(hexmapFilePath), fileRoot); // .writerWithDefaultPrettyPrinter()
 
+        Storage.store(fileRoot);
         new IncidenceTweetFormatter("##", "Österreich, Fallzahlen nach Altersgruppen.").format(fileRoot);
 
     }

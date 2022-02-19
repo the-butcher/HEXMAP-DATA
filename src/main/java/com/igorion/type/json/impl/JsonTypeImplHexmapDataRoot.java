@@ -59,11 +59,12 @@ public class JsonTypeImplHexmapDataRoot extends AJsonTypeImpl {
         this.indx = indx;
     }
 
-    public void addIdx(String name, int minY, int maxY) {
+    public void addIdx(String name, int minY, int maxY, boolean isHiddenOption) {
         JsonTypeImplHexmapIndex idx = new JsonTypeImplHexmapIndex();
         idx.setName(name);
         idx.setMinY(minY);
         idx.setMaxY(maxY);
+        idx.setHiddenOption(isHiddenOption);
         this.idxs.add(idx);
     }
 
