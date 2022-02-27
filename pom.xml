@@ -144,6 +144,10 @@
 				<configuration>
 					<source>${maven.compiler.source}</source>
 					<target>${maven.compiler.target}</target>
+                    <compilerArgs>
+                        <arg>--add-modules</arg>
+                        <arg>java.se,java.desktop</arg>
+                    </compilerArgs>						
 				</configuration>
 			</plugin>
 

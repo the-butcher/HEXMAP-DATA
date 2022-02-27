@@ -84,7 +84,8 @@ public class HexmapControlParser01IncidenceAge {
         JsonTypeImplHexmapDataRoot fileRoot = new JsonTypeImplHexmapDataRoot("hexmap-data-01-incidence-age.json");
         fileRoot.addKeyset("Bundesland", Location.KEYSET_PROVINCE);
         fileRoot.addKeyset("Altersgruppe", Population.KEYSET_AGE_GROUP);
-        fileRoot.addIdx("Fälle", 0, 5000, false);
+        fileRoot.addIdx("cases", 0, 5000, false);
+        fileRoot.addIdx("fatal", 0, 5000, false);
         fileRoot.setIndx(0);
 
         List<String> dateKeys = new ArrayList<>(dataRoot.getDateKeys());
@@ -101,9 +102,11 @@ public class HexmapControlParser01IncidenceAge {
             for (String key00 : keys00) {
 
                 double value00 = dataRoot.getValue(dateKey00, key00, 0);
-                double population = dataRoot.getValue(dateKey00, key00, 1);
+                double fatal00 = dataRoot.getValue(dateKey00, key00, 1);
+                double population = dataRoot.getValue(dateKey00, key00, 2);
 
                 fileRoot.addData(dateKey00, key00, 0, value00);
+                fileRoot.addData(dateKey00, key00, 1, fatal00);
                 fileRoot.setPopulation(key00, (int) population);
 
             }
@@ -136,7 +139,8 @@ public class HexmapControlParser01IncidenceAge {
 
             IFieldType<Date> fieldTypeDate = new FieldTypeImplDate(DATE_FORMAT_____CASE, "[0-9]{2}.[0-9]{2}.[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2}");
 
-            Map<String, Double> valuesByKey = new LinkedHashMap<>();
+            Map<String, Double> exposedByKey = new LinkedHashMap<>();
+            Map<String, Double> fatalByKey = new LinkedHashMap<>();
             Map<String, Double> populationByKey = new LinkedHashMap<>();
             Date currDate = new Date(0L);
 
@@ -148,12 +152,14 @@ public class HexmapControlParser01IncidenceAge {
                         throw new IllegalStateException();
                     }
                     final Date dataData = currDate;
-                    if (!valuesByKey.isEmpty()) {
-                        valuesByKey.entrySet().stream().forEach(e -> dataRoot.addData(dataData, e.getKey(), 0, e.getValue()));
-                        populationByKey.entrySet().stream().forEach(e -> dataRoot.addData(dataData, e.getKey(), 1, e.getValue()));
+                    if (!exposedByKey.isEmpty()) {
+                        exposedByKey.entrySet().stream().forEach(e -> dataRoot.addData(dataData, e.getKey(), 0, e.getValue()));
+                        fatalByKey.entrySet().stream().forEach(e -> dataRoot.addData(dataData, e.getKey(), 1, e.getValue()));
+                        populationByKey.entrySet().stream().forEach(e -> dataRoot.addData(dataData, e.getKey(), 2, e.getValue()));
                     }
                     currDate = entryDate;
-                    valuesByKey = new LinkedHashMap<>();
+                    exposedByKey = new LinkedHashMap<>();
+                    fatalByKey = new LinkedHashMap<>();
                     populationByKey = new LinkedHashMap<>();
                 }
 
@@ -163,22 +169,29 @@ public class HexmapControlParser01IncidenceAge {
                 if (CODES_BY_PROVINCE.containsKey(province) && AGE_GROUPS_CASE_MAP.containsKey(ageGroup)) {
 
                     double exposed = caseCsvRecord.optValue("Anzahl", FieldTypes.LONG).orElseThrow().intValue();
+                    double fatal = caseCsvRecord.optValue("AnzahlTot", FieldTypes.LONG).orElseThrow().intValue();
+
                     double population = caseCsvRecord.optValue("AnzEinwohner", FieldTypes.LONG).orElseThrow().intValue();
 
                     String key = findProvinceKey(province) + findAgeGroupKey(AGE_GROUPS_CASE_MAP.get(ageGroup));
                     String keyT = findProvinceKey(province) + findAgeGroupKey(Population.TOTAL);
-                    if (!valuesByKey.containsKey(keyT)) {
+
+                    if (!exposedByKey.containsKey(keyT)) {
 //                        System.out.println("adding: " + keyT + " _ " + currDate);
-                        valuesByKey.put(keyT, 0D);
+                        exposedByKey.put(keyT, 0D);
+                        fatalByKey.put(keyT, 0D);
                         populationByKey.put(keyT, 0D);
                     }
-                    if (!valuesByKey.containsKey(key)) {
+                    if (!exposedByKey.containsKey(key)) {
 
-                        valuesByKey.put(key, 0D);
+                        exposedByKey.put(key, 0D);
+                        fatalByKey.put(key, 0D);
                         populationByKey.put(key, 0D);
                     }
-                    valuesByKey.put(keyT, valuesByKey.get(keyT) + exposed);
-                    valuesByKey.put(key, valuesByKey.get(key) + exposed);
+                    exposedByKey.put(keyT, exposedByKey.get(keyT) + exposed);
+                    exposedByKey.put(key, exposedByKey.get(key) + exposed);
+                    fatalByKey.put(keyT, fatalByKey.get(keyT) + fatal);
+                    fatalByKey.put(key, fatalByKey.get(key) + fatal);
                     populationByKey.put(keyT, populationByKey.get(keyT) + population);
                     populationByKey.put(key, populationByKey.get(key) + population);
 
@@ -187,9 +200,10 @@ public class HexmapControlParser01IncidenceAge {
             } // for (IDataEntry<String, Long> caseCsvRecord : caseCsvRecords)
 
             final Date dataData = currDate;
-            if (!valuesByKey.isEmpty()) {
-                valuesByKey.entrySet().stream().forEach(e -> dataRoot.addData(dataData, e.getKey(), 0, e.getValue()));
-                populationByKey.entrySet().stream().forEach(e -> dataRoot.addData(dataData, e.getKey(), 1, e.getValue()));
+            if (!exposedByKey.isEmpty()) {
+                exposedByKey.entrySet().stream().forEach(e -> dataRoot.addData(dataData, e.getKey(), 0, e.getValue()));
+                fatalByKey.entrySet().stream().forEach(e -> dataRoot.addData(dataData, e.getKey(), 1, e.getValue()));
+                populationByKey.entrySet().stream().forEach(e -> dataRoot.addData(dataData, e.getKey(), 2, e.getValue()));
             }
 
         }

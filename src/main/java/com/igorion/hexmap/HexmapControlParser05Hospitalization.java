@@ -37,14 +37,14 @@ public class HexmapControlParser05Hospitalization {
 
     public static Map<String, Integer> KEYSET_REGULAR_BED_CAPACITY = new LinkedHashMap<>();
     static {
-        KEYSET_REGULAR_BED_CAPACITY.put("#", 37869);
+        KEYSET_REGULAR_BED_CAPACITY.put("#", 37842);
         KEYSET_REGULAR_BED_CAPACITY.put("1", 905);
         KEYSET_REGULAR_BED_CAPACITY.put("2", 2484);
-        KEYSET_REGULAR_BED_CAPACITY.put("3", 6650);
+        KEYSET_REGULAR_BED_CAPACITY.put("3", 6621);
         KEYSET_REGULAR_BED_CAPACITY.put("4", 7110);
-        KEYSET_REGULAR_BED_CAPACITY.put("5", 2398);
-        KEYSET_REGULAR_BED_CAPACITY.put("6", 5183);
-        KEYSET_REGULAR_BED_CAPACITY.put("7", 3332);
+        KEYSET_REGULAR_BED_CAPACITY.put("5", 2391);
+        KEYSET_REGULAR_BED_CAPACITY.put("6", 5188);
+        KEYSET_REGULAR_BED_CAPACITY.put("7", 3336);
         KEYSET_REGULAR_BED_CAPACITY.put("8", 1861);
         KEYSET_REGULAR_BED_CAPACITY.put("9", 7946);
     }

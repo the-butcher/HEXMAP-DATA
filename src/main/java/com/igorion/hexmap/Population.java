@@ -22,6 +22,21 @@ public class Population {
         KEYSET_AGE_GROUP.put("9", ">= 85");
     }
 
+    public static Map<String, String> KEYSET_AGE_GROUP_VACC = new LinkedHashMap<>();
+    static {
+        KEYSET_AGE_GROUP_VACC.put("#", TOTAL);
+        KEYSET_AGE_GROUP_VACC.put("0", "<= 11");
+        KEYSET_AGE_GROUP_VACC.put("1", "12-14");
+        KEYSET_AGE_GROUP_VACC.put("2", "15-24");
+        KEYSET_AGE_GROUP_VACC.put("3", "25-34");
+        KEYSET_AGE_GROUP_VACC.put("4", "35-44");
+        KEYSET_AGE_GROUP_VACC.put("5", "45-54");
+        KEYSET_AGE_GROUP_VACC.put("6", "55-64");
+        KEYSET_AGE_GROUP_VACC.put("7", "65-74");
+        KEYSET_AGE_GROUP_VACC.put("8", "75-84");
+        KEYSET_AGE_GROUP_VACC.put("9", ">= 85");
+    }
+
     public static Map<String, String> KEYSET_GKZ_OVERRIDE = new LinkedHashMap<>();
     static {
 
