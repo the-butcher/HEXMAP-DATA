@@ -192,37 +192,37 @@ public class StatToPopParser {
 //        AGE_CLASSIFICATION.put("85_99", Arrays.asList("85", "86", "87", "88", "89", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99"));
 
         // hexcube-base-population_00n90
-//        AGE_CLASSIFICATION.put("00_04", Arrays.asList("0", "1", "2", "3", "4"));
-//        AGE_CLASSIFICATION.put("05_09", Arrays.asList("5", "6", "7", "8", "9"));
-//        AGE_CLASSIFICATION.put("10_14", Arrays.asList("10", "11", "12", "13", "14"));
-//        AGE_CLASSIFICATION.put("15_19", Arrays.asList("15", "16", "17", "18", "19"));
-//        AGE_CLASSIFICATION.put("20_24", Arrays.asList("20", "21", "22", "23", "24"));
-//        AGE_CLASSIFICATION.put("25_29", Arrays.asList("25", "26", "27", "28", "29"));
-//        AGE_CLASSIFICATION.put("30_34", Arrays.asList("30", "31", "32", "33", "34"));
-//        AGE_CLASSIFICATION.put("35_39", Arrays.asList("35", "36", "37", "38", "39"));
-//        AGE_CLASSIFICATION.put("40_44", Arrays.asList("40", "41", "42", "43", "44"));
-//        AGE_CLASSIFICATION.put("45_49", Arrays.asList("45", "46", "47", "48", "49"));
-//        AGE_CLASSIFICATION.put("50_54", Arrays.asList("50", "51", "52", "53", "54"));
-//        AGE_CLASSIFICATION.put("55_59", Arrays.asList("55", "56", "57", "58", "59"));
-//        AGE_CLASSIFICATION.put("60_64", Arrays.asList("60", "61", "62", "63", "64"));
-//        AGE_CLASSIFICATION.put("65_69", Arrays.asList("65", "66", "67", "68", "69"));
-//        AGE_CLASSIFICATION.put("70_74", Arrays.asList("70", "71", "72", "73", "74"));
-//        AGE_CLASSIFICATION.put("75_79", Arrays.asList("75", "76", "77", "78", "79"));
-//        AGE_CLASSIFICATION.put("80_84", Arrays.asList("80", "81", "82", "83", "84"));
-//        AGE_CLASSIFICATION.put("85_89", Arrays.asList("85", "86", "87", "88", "89"));
-//        AGE_CLASSIFICATION.put("90_00", Arrays.asList("90", "91", "92", "93", "94", "95", "96", "97", "98", "99"));
+        AGE_CLASSIFICATION.put("00_04", Arrays.asList("0", "1", "2", "3", "4"));
+        AGE_CLASSIFICATION.put("05_09", Arrays.asList("5", "6", "7", "8", "9"));
+        AGE_CLASSIFICATION.put("10_14", Arrays.asList("10", "11", "12", "13", "14"));
+        AGE_CLASSIFICATION.put("15_19", Arrays.asList("15", "16", "17", "18", "19"));
+        AGE_CLASSIFICATION.put("20_24", Arrays.asList("20", "21", "22", "23", "24"));
+        AGE_CLASSIFICATION.put("25_29", Arrays.asList("25", "26", "27", "28", "29"));
+        AGE_CLASSIFICATION.put("30_34", Arrays.asList("30", "31", "32", "33", "34"));
+        AGE_CLASSIFICATION.put("35_39", Arrays.asList("35", "36", "37", "38", "39"));
+        AGE_CLASSIFICATION.put("40_44", Arrays.asList("40", "41", "42", "43", "44"));
+        AGE_CLASSIFICATION.put("45_49", Arrays.asList("45", "46", "47", "48", "49"));
+        AGE_CLASSIFICATION.put("50_54", Arrays.asList("50", "51", "52", "53", "54"));
+        AGE_CLASSIFICATION.put("55_59", Arrays.asList("55", "56", "57", "58", "59"));
+        AGE_CLASSIFICATION.put("60_64", Arrays.asList("60", "61", "62", "63", "64"));
+        AGE_CLASSIFICATION.put("65_69", Arrays.asList("65", "66", "67", "68", "69"));
+        AGE_CLASSIFICATION.put("70_74", Arrays.asList("70", "71", "72", "73", "74"));
+        AGE_CLASSIFICATION.put("75_79", Arrays.asList("75", "76", "77", "78", "79"));
+        AGE_CLASSIFICATION.put("80_84", Arrays.asList("80", "81", "82", "83", "84"));
+        AGE_CLASSIFICATION.put("85_89", Arrays.asList("85", "86", "87", "88", "89"));
+        AGE_CLASSIFICATION.put("90_00", Arrays.asList("90", "91", "92", "93", "94", "95", "96", "97", "98", "99"));
 
         // hexcube-base-population_00_12_14n;
-        AGE_CLASSIFICATION.put("00_11", Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"));
-        AGE_CLASSIFICATION.put("12_14", Arrays.asList("12", "13", "14"));
-        AGE_CLASSIFICATION.put("15_24", Arrays.asList("15", "16", "17", "18", "19", "20", "21", "22", "23", "24"));
-        AGE_CLASSIFICATION.put("25_34", Arrays.asList("25", "26", "27", "28", "29", "30", "31", "32", "33", "34"));
-        AGE_CLASSIFICATION.put("35_44", Arrays.asList("35", "36", "37", "38", "39", "40", "41", "42", "43", "44"));
-        AGE_CLASSIFICATION.put("45_54", Arrays.asList("45", "46", "47", "48", "49", "50", "51", "52", "53", "54"));
-        AGE_CLASSIFICATION.put("55_64", Arrays.asList("55", "56", "57", "58", "59", "60", "61", "62", "63", "64"));
-        AGE_CLASSIFICATION.put("65_74", Arrays.asList("65", "66", "67", "68", "69", "70", "71", "72", "73", "74"));
-        AGE_CLASSIFICATION.put("75_84", Arrays.asList("75", "76", "77", "78", "79", "80", "81", "82", "83", "84"));
-        AGE_CLASSIFICATION.put("85_99", Arrays.asList("85", "86", "87", "88", "89", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99"));
+//        AGE_CLASSIFICATION.put("00_11", Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"));
+//        AGE_CLASSIFICATION.put("12_14", Arrays.asList("12", "13", "14"));
+//        AGE_CLASSIFICATION.put("15_24", Arrays.asList("15", "16", "17", "18", "19", "20", "21", "22", "23", "24"));
+//        AGE_CLASSIFICATION.put("25_34", Arrays.asList("25", "26", "27", "28", "29", "30", "31", "32", "33", "34"));
+//        AGE_CLASSIFICATION.put("35_44", Arrays.asList("35", "36", "37", "38", "39", "40", "41", "42", "43", "44"));
+//        AGE_CLASSIFICATION.put("45_54", Arrays.asList("45", "46", "47", "48", "49", "50", "51", "52", "53", "54"));
+//        AGE_CLASSIFICATION.put("55_64", Arrays.asList("55", "56", "57", "58", "59", "60", "61", "62", "63", "64"));
+//        AGE_CLASSIFICATION.put("65_74", Arrays.asList("65", "66", "67", "68", "69", "70", "71", "72", "73", "74"));
+//        AGE_CLASSIFICATION.put("75_84", Arrays.asList("75", "76", "77", "78", "79", "80", "81", "82", "83", "84"));
+//        AGE_CLASSIFICATION.put("85_99", Arrays.asList("85", "86", "87", "88", "89", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99"));
 
     }
 
@@ -234,7 +234,7 @@ public class StatToPopParser {
     public static final File FOLDER__BASE = new File("C:\\privat\\_projects_cov\\covid2019_hexmap_data");
 //    public static final File FILE_POP__IN = new File(FOLDER__BASE, "OGD_bevstandjbab2002_BevStand_2020.csv");
     public static final File FILE_POP_OUT_JSON = new File(FOLDER__BASE, "hexmap-data-population-gemeinde.json");
-    public static final File FILE_POP_OUT__CSV = new File(FOLDER__BASE, "hexcube-base-population_00_12_14n.csv");
+    public static final File FILE_POP_OUT__CSV = new File(FOLDER__BASE, "hexcube-base-population_00n90.csv");
 
     public static final File FILE_POP_GKZ = new File(FOLDER__BASE, "endgueltige_bevoelkerungszahl_fuer_das_finanzjahr_2022_je_gemeinde.csv");
     public static final SimpleDateFormat DATE_FORMAT_____CASE = new SimpleDateFormat("yyyy-MM-dd");

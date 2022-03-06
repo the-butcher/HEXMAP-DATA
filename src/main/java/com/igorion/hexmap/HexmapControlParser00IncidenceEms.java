@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.igorion.app.impl.C19Application;
 import com.igorion.hexmap.location.Location;
@@ -125,7 +126,10 @@ public class HexmapControlParser00IncidenceEms {
         }
 
         Storage.store(fileRoot);
-        new IncidenceTweetFormatter("#", "Österreich, Fallzahlen laut EMS Morgenmeldung.").format(fileRoot);
+        for (Entry<String, String> locationEntry : Location.KEYSET_PROVINCE.entrySet()) {
+            new IncidenceTweetFormatter(locationEntry.getKey(), locationEntry.getValue() + ", Fallzahlen laut EMS Morgenmeldung.").format(fileRoot);
+        }
+//        new IncidenceTweetFormatter("#", "Österreich, Fallzahlen laut EMS Morgenmeldung.").format(fileRoot);
 
     }
 

@@ -1,6 +1,7 @@
 package com.igorion.hexmap.mortality.impl;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -18,7 +19,6 @@ import java.util.stream.Collectors;
 
 import com.igorion.hexmap.mortality.EAgeGroup;
 import com.igorion.hexmap.mortality.IMortality;
-import com.igorion.hexmap.mortality.MortalityParserNuts3;
 import com.igorion.report.dataset.IDataEntry;
 import com.igorion.report.dataset.IDataSet;
 import com.igorion.report.dataset.IDataSetFactory;
@@ -36,9 +36,9 @@ public class Mortality {
         // no public instance
     }
 
-    protected static void loadMortality() {
+    protected static void loadMortality(File mortalityFile) {
 
-        try (BufferedReader csvReader = new BufferedReader(new InputStreamReader(new FileInputStream(MortalityParserNuts3.FILE_NUTS3_AGE_WEEK), StandardCharsets.UTF_8))) {
+        try (BufferedReader csvReader = new BufferedReader(new InputStreamReader(new FileInputStream(mortalityFile), StandardCharsets.UTF_8))) {
 
             IDataSetFactory<String, Long> csvDatasetFactory = new DataSetFactoryImplCsv(";");
             IDataSet<String, Long> csvDataSet = csvDatasetFactory.createDataSet(csvReader);
@@ -50,17 +50,22 @@ public class Mortality {
 
                 for (String dateField : dateFields) {
 
-                    String ageGroupRaw = csvRecord.optValue("AGE", FieldTypes.STRING).orElseThrow();
+                    String[] yearAndWeekRaw = dateField.split("W");
+                    int year = Integer.parseInt(yearAndWeekRaw[0]);
+                    int week = Integer.parseInt(yearAndWeekRaw[1].substring(0));
+                    if (year < 2010 || week == 0 || week == 99) {
+                        continue;
+                    }
+
+                    String ageGroupRaw = csvRecord.optValue("AGE", FieldTypes.STRING).orElseThrow(() -> new RuntimeException("failed to resolve AGE"));
                     EAgeGroup ageGroup = EAgeGroup.optAgeGroup(ageGroupRaw).orElseThrow(() -> new RuntimeException("failed to resolve age group (" + ageGroupRaw + ")"));
 
-                    String nuts3 = csvRecord.optValue("NUTS3", FieldTypes.STRING).orElseThrow();
-                    int deaths = csvRecord.optValue(dateField, FieldTypes.LONG).orElseThrow().intValue();
-
-                    String[] yearAndWeekRaw = dateField.split("_");
-                    int year = Integer.parseInt(yearAndWeekRaw[0]);
-                    int week = Integer.parseInt(yearAndWeekRaw[1].substring(1));
+                    String nuts3 = csvRecord.optValue("NUTS3", FieldTypes.STRING).orElseThrow(() -> new RuntimeException("failed to resolve NUTS3"));
+                    String deathsRaw = csvRecord.optValue(dateField, FieldTypes.STRING).orElseThrow(() -> new RuntimeException("failed to resolve date (" + dateField + ")"));
+                    int deaths = Integer.parseInt(deathsRaw);
 
                     MORTALITY.computeIfAbsent(nuts3, n -> new MortalityImpl()).addDeaths(ageGroup, toThursdayInWeek(year, week), deaths);
+                    MORTALITY.computeIfAbsent(nuts3, n -> new MortalityImpl()).addDeaths(EAgeGroup.ETOTAL, toThursdayInWeek(year, week), deaths);
 
                 }
 
@@ -74,9 +79,9 @@ public class Mortality {
 
     }
 
-    public static Optional<IMortality> optMortalityByNuts3(String nuts3) {
+    public static Optional<IMortality> optMortalityByNuts3(String nuts3, File mortalityFile) {
         if (MORTALITY.isEmpty()) {
-            loadMortality();
+            loadMortality(mortalityFile);
         }
         return Optional.ofNullable(MORTALITY.get(nuts3));
     }

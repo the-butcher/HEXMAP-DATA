@@ -15,8 +15,13 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.igorion.app.impl.C19Application;
+import com.igorion.hexmap.forecast.IForecast;
+import com.igorion.hexmap.forecast.IForecasts;
+import com.igorion.hexmap.forecast.impl.ForecastImpl;
+import com.igorion.hexmap.forecast.impl.ForecastsImpl;
 import com.igorion.hexmap.location.Location;
 import com.igorion.http.IHttpRequest;
 import com.igorion.http.IHttpResponse;
@@ -31,6 +36,7 @@ import com.igorion.report.dataset.impl.DataSetFactoryImplCsv;
 import com.igorion.report.value.FieldTypeImplDate;
 import com.igorion.report.value.FieldTypes;
 import com.igorion.type.json.impl.JsonTypeImplHexmapDataRoot;
+import com.igorion.util.impl.DateUtil;
 import com.igorion.util.impl.Storage;
 
 public class HexmapControlParser05Hospitalization {
@@ -52,9 +58,12 @@ public class HexmapControlParser05Hospitalization {
     public static final String URL__HOSPITALIZATION = "https://covid19-dashboard.ages.at/data/Hospitalisierung.csv";
 
     public static final File FILE_HOSPITALIZATION = new File(Storage.FOLDER___WORK, "hopitalization_bezirk.csv");
+    public static final File FILE____FORECAST_REG = new File(Storage.FOLDER___WORK, "forecast_reg_20220301.csv");
+    public static final File FILE____FORECAST_ICU = new File(Storage.FOLDER___WORK, "forecast_icu_20220301.csv");
 
     // 24.01.2021 00:00:00;1;Burgenland;38;52;7;37;8;361192
     public static final SimpleDateFormat DATE_FORMAT_____FILE = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+    public static final IFieldType<Date> FIELD_TYPE_DATE = new FieldTypeImplDate(DATE_FORMAT_____FILE, "[0-9]{2}.[0-9]{2}.[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2}");
 
     public static void main(String[] args) throws Exception {
 
@@ -84,18 +93,24 @@ public class HexmapControlParser05Hospitalization {
         fileRootIcu.addKeyset("Bundesland", Location.KEYSET_PROVINCE);
         fileRootReg.addKeyset("Bundesland", Location.KEYSET_PROVINCE);
 
-        fileRootIcu.addIdx("hsp___low", 0, 1, true); // 10
+        fileRootIcu.addIdx("Grenzen", 0, 1, true); // 10
         fileRootIcu.addIdx("hsp__med1", 0, 1, true); // 25
         fileRootIcu.addIdx("hsp__med2", 0, 1, true); // 33
         fileRootIcu.addIdx("hsp__high", 0, 1, true); // 50
         fileRootIcu.addIdx("Intensivstation", 0, 1, false);
+        fileRootIcu.addIdx("Prognose", 0, 1, true);
+        fileRootIcu.addIdx("xlo____ln", 0, 1, true);
+        fileRootIcu.addIdx("xhi____ln", 0, 1, true);
         fileRootIcu.setIndx(4);
 
-        fileRootReg.addIdx("hsp___low", 0, 1, true); // 04
+        fileRootReg.addIdx("Grenzen", 0, 1, true); // 04
         fileRootReg.addIdx("hsp__med1", 0, 1, true); // 08
         fileRootReg.addIdx("hsp__med2", 0, 1, true); // 11
         fileRootReg.addIdx("hsp__high", 0, 1, true); // 30
         fileRootReg.addIdx("Normalstation", 0, 1, false);
+        fileRootReg.addIdx("Prognose", 0, 1, true);
+        fileRootReg.addIdx("xlo____ln", 0, 1, true);
+        fileRootReg.addIdx("xhi____ln", 0, 1, true);
         fileRootReg.setIndx(4);
 
         List<String> dateKeys = new ArrayList<>(dataRoot.getDateKeys());
@@ -116,12 +131,18 @@ public class HexmapControlParser05Hospitalization {
                 fileRootIcu.addData(dateKey00, key00, 2, 0.08);
                 fileRootIcu.addData(dateKey00, key00, 3, 0.17);
                 fileRootIcu.addData(dateKey00, key00, 4, dataRoot.getValue(dateKey00, key00, 0));
+                fileRootIcu.addData(dateKey00, key00, 5, dataRoot.getValue(dateKey00, key00, 2));
+                fileRootIcu.addData(dateKey00, key00, 6, dataRoot.getValue(dateKey00, key00, 3));
+                fileRootIcu.addData(dateKey00, key00, 7, dataRoot.getValue(dateKey00, key00, 4));
 
                 fileRootReg.addData(dateKey00, key00, 0, 0.04);
                 fileRootReg.addData(dateKey00, key00, 1, 0.04);
                 fileRootReg.addData(dateKey00, key00, 2, 0.03);
                 fileRootReg.addData(dateKey00, key00, 3, 0.04);
                 fileRootReg.addData(dateKey00, key00, 4, dataRoot.getValue(dateKey00, key00, 1));
+                fileRootReg.addData(dateKey00, key00, 5, dataRoot.getValue(dateKey00, key00, 5));
+                fileRootReg.addData(dateKey00, key00, 6, dataRoot.getValue(dateKey00, key00, 6));
+                fileRootReg.addData(dateKey00, key00, 7, dataRoot.getValue(dateKey00, key00, 7));
 
             }
 
@@ -133,7 +154,47 @@ public class HexmapControlParser05Hospitalization {
 
     }
 
+    protected static IForecasts parseForecasts(File file) throws Exception {
+
+        ForecastsImpl forecasts = new ForecastsImpl();
+        try (BufferedReader forecastCsvReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
+
+            IDataSetFactory<String, Long> forecastCsvDatasetFactory = new DataSetFactoryImplCsv();
+            IDataSet<String, Long> caseCsvDataSet = forecastCsvDatasetFactory.createDataSet(forecastCsvReader);
+            List<IDataEntry<String, Long>> forecastCsvRecords = caseCsvDataSet.getEntriesY();
+
+            for (IDataEntry<String, Long> forecastCsvRecord : forecastCsvRecords) {
+
+                for (String location : Location.KEYSET_PROVINCE.keySet()) {
+
+                    String fieldNameCi68Upper = "p84_" + location;
+                    String fieldNameForecast = "p50_" + location;
+                    String fieldNameCi68Lower = "p16_" + location;
+
+                    Date entryDate = forecastCsvRecord.optValue("date", FIELD_TYPE_DATE).orElseThrow();
+                    double ci68Upper = forecastCsvRecord.optValue(fieldNameCi68Upper, FieldTypes.DOUBLE).orElseThrow();
+                    double forecast = forecastCsvRecord.optValue(fieldNameForecast, FieldTypes.DOUBLE).orElseThrow();
+                    double ci68Lower = forecastCsvRecord.optValue(fieldNameCi68Lower, FieldTypes.DOUBLE).orElseThrow();
+
+                    forecasts.addForecast(new ForecastImpl(entryDate, location, forecast, ci68Upper, ci68Lower));
+
+                }
+
+            }
+
+        }
+        return forecasts;
+
+    }
+
     protected static void parseHospitalizationData(JsonTypeImplHexmapDataRoot dataRoot) throws Exception {
+
+        Date maxDateHospital = new Date();
+
+        IForecasts forecastsIcu = parseForecasts(FILE____FORECAST_ICU);
+        IForecasts forecastsReg = parseForecasts(FILE____FORECAST_REG);
+
+        Map<String, Integer> icuBedCapacity = new LinkedHashMap<>();
 
         try (BufferedReader csvReader = new BufferedReader(new InputStreamReader(new FileInputStream(FILE_HOSPITALIZATION), StandardCharsets.UTF_8))) {
 
@@ -141,11 +202,13 @@ public class HexmapControlParser05Hospitalization {
             IDataSet<String, Long> caseCsvDataSet = caseCsvDatasetFactory.createDataSet(csvReader);
             List<IDataEntry<String, Long>> caseCsvRecords = caseCsvDataSet.getEntriesY();
 
-            IFieldType<Date> fieldTypeDate = new FieldTypeImplDate(DATE_FORMAT_____FILE, "[0-9]{2}.[0-9]{2}.[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2}");
-
             for (IDataEntry<String, Long> caseCsvRecord : caseCsvRecords) {
 
-                Date entryDate = caseCsvRecord.optValue("Meldedatum", fieldTypeDate).orElseThrow();
+                Date entryDate = caseCsvRecord.optValue("Meldedatum", FIELD_TYPE_DATE).orElseThrow();
+                if (entryDate.getTime() > maxDateHospital.getTime()) {
+                    maxDateHospital = entryDate;
+                }
+
                 String bkz = caseCsvRecord.optValue("BundeslandID", FieldTypes.STRING).orElseThrow();
                 if (bkz.equals("10")) {
                     bkz = "#";
@@ -157,13 +220,71 @@ public class HexmapControlParser05Hospitalization {
                 double curntReg = caseCsvRecord.optValue("NormalBettenBelCovid19", FieldTypes.LONG).orElseThrow().intValue();
                 double totalReg = KEYSET_REGULAR_BED_CAPACITY.get(bkz);
 
-//                dataRoot.addData(entryDate, bkz, 0, 0.10);
-//                dataRoot.addData(entryDate, bkz, 1, 0.23);
-//                dataRoot.addData(entryDate, bkz, 2, 0.17);
+                icuBedCapacity.put(bkz, (int) totalIcu);
+
                 dataRoot.addData(entryDate, bkz, 0, Math.round(curntIcu * 10000D / totalIcu) / 10000D);
                 dataRoot.addData(entryDate, bkz, 1, Math.round(curntReg * 10000D / totalReg) / 10000D);
 
+                Optional<IForecast> oForecastIcu = forecastsIcu.optForecast(entryDate, bkz);
+                if (oForecastIcu.isPresent()) {
+                    IForecast forecast = oForecastIcu.get();
+                    dataRoot.addData(entryDate, bkz, 2, Math.round(forecast.getForecast() * 10000D / totalIcu) / 10000D);
+                    dataRoot.addData(entryDate, bkz, 3, Math.round(forecast.getCi68Lower() * 10000D / totalIcu) / 10000D);
+                    dataRoot.addData(entryDate, bkz, 4, Math.round((forecast.getCi68Upper() - forecast.getCi68Lower()) * 10000D / totalIcu) / 10000D);
+                } else {
+                    dataRoot.addData(entryDate, bkz, 2, 0);
+                    dataRoot.addData(entryDate, bkz, 3, 0);
+                    dataRoot.addData(entryDate, bkz, 4, 0);
+                }
+
+                Optional<IForecast> oForecastReg = forecastsReg.optForecast(entryDate, bkz);
+                if (oForecastReg.isPresent()) {
+                    IForecast forecast = oForecastReg.get();
+                    dataRoot.addData(entryDate, bkz, 5, Math.round(forecast.getForecast() * 10000D / totalReg) / 10000D);
+                    dataRoot.addData(entryDate, bkz, 6, Math.round(forecast.getCi68Lower() * 10000D / totalReg) / 10000D);
+                    dataRoot.addData(entryDate, bkz, 7, Math.round((forecast.getCi68Upper() - forecast.getCi68Lower()) * 10000D / totalReg) / 10000D);
+                } else {
+                    dataRoot.addData(entryDate, bkz, 5, 0);
+                    dataRoot.addData(entryDate, bkz, 6, 0);
+                    dataRoot.addData(entryDate, bkz, 7, 0);
+                }
+
             } // for (IDataEntry<String, Long> caseCsvRecord : caseCsvRecords)
+
+            long maxForecastInstant = Math.max(forecastsIcu.getMaxDate().getTime(), forecastsReg.getMaxDate().getTime());
+
+            for (long instant = maxDateHospital.getTime() + DateUtil.MILLISECONDS_PER__DAY; instant <= maxForecastInstant + DateUtil.MILLISECONDS_PER__DAY; instant += DateUtil.MILLISECONDS_PER__DAY) {
+
+                Date entryDate = new Date(instant);
+
+                for (String bkz : Location.KEYSET_PROVINCE.keySet()) {
+
+                    double totalIcu = icuBedCapacity.get(bkz);
+                    double totalReg = KEYSET_REGULAR_BED_CAPACITY.get(bkz);
+
+                    Optional<IForecast> oForecastIcu = forecastsIcu.optForecast(entryDate, bkz);
+                    Optional<IForecast> oForecastReg = forecastsReg.optForecast(entryDate, bkz);
+                    if (oForecastIcu.isPresent() && oForecastReg.isPresent()) {
+
+//                        System.out.println("extra forecast: " + entryDate);
+                        IForecast forecastIcu = oForecastIcu.get();
+                        IForecast forecastReg = oForecastReg.get();
+
+                        dataRoot.addData(entryDate, bkz, 0, 0);
+                        dataRoot.addData(entryDate, bkz, 1, 0);
+                        dataRoot.addData(entryDate, bkz, 2, Math.round(forecastIcu.getForecast() * 10000D / totalIcu) / 10000D);
+                        dataRoot.addData(entryDate, bkz, 3, Math.round(forecastIcu.getCi68Lower() * 10000D / totalIcu) / 10000D);
+                        dataRoot.addData(entryDate, bkz, 4, Math.round((forecastIcu.getCi68Upper() - forecastIcu.getCi68Lower()) * 10000D / totalIcu) / 10000D);
+                        dataRoot.addData(entryDate, bkz, 5, Math.round(forecastReg.getForecast() * 10000D / totalReg) / 10000D);
+                        dataRoot.addData(entryDate, bkz, 6, Math.round(forecastReg.getCi68Lower() * 10000D / totalReg) / 10000D);
+                        dataRoot.addData(entryDate, bkz, 7, Math.round((forecastReg.getCi68Upper() - forecastReg.getCi68Lower()) * 10000D / totalReg) / 10000D);
+
+                    } else {
+                        System.out.println("extra forecast missing: " + entryDate);
+                    }
+                }
+
+            }
 
         }
 

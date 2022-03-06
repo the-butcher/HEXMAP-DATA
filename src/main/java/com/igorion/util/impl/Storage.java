@@ -75,7 +75,7 @@ public class Storage {
 
         for (JsonTypeImplHexmapDataRoot dataRoot : dataRoots) {
             File hexmapFile = new File(Storage.FOLDER_TARGET, dataRoot.getFileName());
-            new ObjectMapper().writeValue(hexmapFile, dataRoot); // .writerWithDefaultPrettyPrinter()
+            new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(hexmapFile, dataRoot); // 
         }
 
         Optional<IFtpServer> oFtpServer = optFtpServerInstance();

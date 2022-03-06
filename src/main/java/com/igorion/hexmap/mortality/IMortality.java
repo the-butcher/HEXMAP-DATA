@@ -11,13 +11,13 @@ public interface IMortality {
     double getYearlyDeaths(EAgeGroup ageGroup, Date date);
 
     /**
-     * get the mortality for this {@link INuts3Region}, {@link EAgeGroup} and {@link Date} (the date's month and day are relevant while the year will be ignored
+     * get the mortality for this {@link INutsRegion}, {@link EAgeGroup} and {@link Date} (the date's month and day are relevant while the year will be ignored
      * @param region
      * @param ageGroup
      * @param date
      * @return
      */
-    default double getWeeklyMortality(INuts3Region region, EAgeGroup ageGroup, Date date) {
+    default double getWeeklyMortality(INutsRegion region, EAgeGroup ageGroup, Date date) {
 
         // Date mappedDate = new Date(getYear() - 1900, date.getMonth(), date.getDate());
         // System.out.println("mapped date: " + date + " to: " + mappedDate);
@@ -28,7 +28,7 @@ public interface IMortality {
 
     }
 
-    default double getYearlyMortality(INuts3Region region, EAgeGroup ageGroup, Date date) {
+    default double getYearlyMortality(INutsRegion region, EAgeGroup ageGroup, Date date) {
 
         // Date mappedDate = new Date(getYear() - 1900, date.getMonth(), date.getDate());
         // System.out.println("mapped date: " + date + " to: " + mappedDate);

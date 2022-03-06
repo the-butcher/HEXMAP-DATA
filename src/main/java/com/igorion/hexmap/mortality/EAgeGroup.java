@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public enum EAgeGroup {
 
-    // ETOTAL("TOTAL"),
+    ETOTAL("TOTAL"),
     E00_04("00_04"),
     E05_09("05_09"),
     E10_14("10_14"),

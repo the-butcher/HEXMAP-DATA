@@ -7,10 +7,10 @@ import com.igorion.hexmap.mortality.IMortality;
 
 public class MortalityImpl implements IMortality {
 
-    private final AgeDateValueMap deaths;
+    private final ValueDateMap deaths;
 
     public MortalityImpl() {
-        this.deaths = new AgeDateValueMap();
+        this.deaths = new ValueDateMap();
     }
 
     @Override

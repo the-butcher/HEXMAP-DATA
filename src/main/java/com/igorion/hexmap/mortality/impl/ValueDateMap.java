@@ -7,12 +7,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.igorion.hexmap.mortality.EAgeGroup;
+import com.igorion.util.impl.DateUtil;
 
-public class AgeDateValueMap {
+public class ValueDateMap {
 
     private final Map<EAgeGroup, Map<Date, Integer>> valuesByDateAndAge;
 
-    public AgeDateValueMap() {
+    public ValueDateMap() {
         this.valuesByDateAndAge = new LinkedHashMap<>();
     }
 
@@ -37,10 +38,11 @@ public class AgeDateValueMap {
 
     }
 
-    public double getWeeklyValue(EAgeGroup ageGroup, Date date) {
+    protected double getWeeklyValueInternal(EAgeGroup ageGroup, Date date) {
 
         Map<Date, Integer> valuesByDate = this.valuesByDateAndAge.get(ageGroup);
         List<Date> dateList = new ArrayList<>(valuesByDate.keySet());
+        dateList.sort((a, b) -> a.compareTo(b));
 
         if (date.getTime() <= dateList.get(0).getTime()) { // earlier than first date
             return valuesByDate.get(dateList.get(0));
@@ -58,6 +60,15 @@ public class AgeDateValueMap {
             }
             throw new IllegalStateException("failed to find interpolateable dates: " + date);
         }
+
+    }
+
+    public double getWeeklyValue(EAgeGroup ageGroup, Date date) {
+
+        Date dateM = new Date(date.getTime() - DateUtil.MILLISECONDS_PER__DAY * 7);
+        Date dateP = new Date(date.getTime() + DateUtil.MILLISECONDS_PER__DAY * 7);
+        return getWeeklyValueInternal(ageGroup, dateM) * 0.25 + getWeeklyValueInternal(ageGroup, date) * 0.5 + getWeeklyValueInternal(ageGroup, dateP) * 0.25;
+        // return getWeeklyValueInternal(ageGroup, date);
 
     }
 
