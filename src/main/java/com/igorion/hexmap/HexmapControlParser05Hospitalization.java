@@ -41,25 +41,113 @@ import com.igorion.util.impl.Storage;
 
 public class HexmapControlParser05Hospitalization {
 
-    public static Map<String, Integer> KEYSET_REGULAR_BED_CAPACITY = new LinkedHashMap<>();
+    public static Map<String, Integer> KEYSET_REGULAR_BED_CAPACITY = new LinkedHashMap<>(); // ??
     static {
-        KEYSET_REGULAR_BED_CAPACITY.put("#", 37842);
-        KEYSET_REGULAR_BED_CAPACITY.put("1", 905);
-        KEYSET_REGULAR_BED_CAPACITY.put("2", 2484);
-        KEYSET_REGULAR_BED_CAPACITY.put("3", 6621);
-        KEYSET_REGULAR_BED_CAPACITY.put("4", 7110);
-        KEYSET_REGULAR_BED_CAPACITY.put("5", 2391);
-        KEYSET_REGULAR_BED_CAPACITY.put("6", 5188);
-        KEYSET_REGULAR_BED_CAPACITY.put("7", 3336);
-        KEYSET_REGULAR_BED_CAPACITY.put("8", 1861);
-        KEYSET_REGULAR_BED_CAPACITY.put("9", 7946);
+
+//        // KW05 (01.02.2022)
+//        KEYSET_REGULAR_BED_CAPACITY.put("#", 37901);
+//        KEYSET_REGULAR_BED_CAPACITY.put("1", 905);
+//        KEYSET_REGULAR_BED_CAPACITY.put("2", 2489);
+//        KEYSET_REGULAR_BED_CAPACITY.put("3", 6684);
+//        KEYSET_REGULAR_BED_CAPACITY.put("4", 7110);
+//        KEYSET_REGULAR_BED_CAPACITY.put("5", 2354);
+//        KEYSET_REGULAR_BED_CAPACITY.put("6", 5148);
+//        KEYSET_REGULAR_BED_CAPACITY.put("7", 3348);
+//        KEYSET_REGULAR_BED_CAPACITY.put("8", 1861);
+//        KEYSET_REGULAR_BED_CAPACITY.put("9", 7946);
+//
+//        // KW06 (08.02.2022)
+//        KEYSET_REGULAR_BED_CAPACITY.put("#", 37865);
+//        KEYSET_REGULAR_BED_CAPACITY.put("1", 905);
+//        KEYSET_REGULAR_BED_CAPACITY.put("2", 2490);
+//        KEYSET_REGULAR_BED_CAPACITY.put("3", 6667);
+//        KEYSET_REGULAR_BED_CAPACITY.put("4", 7110);
+//        KEYSET_REGULAR_BED_CAPACITY.put("5", 2369);
+//        KEYSET_REGULAR_BED_CAPACITY.put("6", 5183);
+//        KEYSET_REGULAR_BED_CAPACITY.put("7", 3332);
+//        KEYSET_REGULAR_BED_CAPACITY.put("8", 1861);
+//        KEYSET_REGULAR_BED_CAPACITY.put("9", 7946);
+//
+//        // KW07 (15.02.2022)
+//        KEYSET_REGULAR_BED_CAPACITY.put("#", 37842);
+//        KEYSET_REGULAR_BED_CAPACITY.put("1", 905);
+//        KEYSET_REGULAR_BED_CAPACITY.put("2", 2484);
+//        KEYSET_REGULAR_BED_CAPACITY.put("3", 6650);
+//        KEYSET_REGULAR_BED_CAPACITY.put("4", 7110);
+//        KEYSET_REGULAR_BED_CAPACITY.put("5", 2389);
+//        KEYSET_REGULAR_BED_CAPACITY.put("6", 5183);
+//        KEYSET_REGULAR_BED_CAPACITY.put("7", 3332);
+//        KEYSET_REGULAR_BED_CAPACITY.put("8", 1861);
+//        KEYSET_REGULAR_BED_CAPACITY.put("9", 7946);
+//
+//        // KW08 (22.02.2022)
+//        KEYSET_REGULAR_BED_CAPACITY.put("#", 37842);
+//        KEYSET_REGULAR_BED_CAPACITY.put("1", 905);
+//        KEYSET_REGULAR_BED_CAPACITY.put("2", 2484);
+//        KEYSET_REGULAR_BED_CAPACITY.put("3", 6621);
+//        KEYSET_REGULAR_BED_CAPACITY.put("4", 7110);
+//        KEYSET_REGULAR_BED_CAPACITY.put("5", 2391);
+//        KEYSET_REGULAR_BED_CAPACITY.put("6", 5188);
+//        KEYSET_REGULAR_BED_CAPACITY.put("7", 3336);
+//        KEYSET_REGULAR_BED_CAPACITY.put("8", 1861);
+//        KEYSET_REGULAR_BED_CAPACITY.put("9", 7946);
+//
+//        // KW09 (01.03.2022)
+//        KEYSET_REGULAR_BED_CAPACITY.put("#", 37926);
+//        KEYSET_REGULAR_BED_CAPACITY.put("1", 897);
+//        KEYSET_REGULAR_BED_CAPACITY.put("2", 2484);
+//        KEYSET_REGULAR_BED_CAPACITY.put("3", 6686);
+//        KEYSET_REGULAR_BED_CAPACITY.put("4", 7110);
+//        KEYSET_REGULAR_BED_CAPACITY.put("5", 2413);
+//        KEYSET_REGULAR_BED_CAPACITY.put("6", 5213);
+//        KEYSET_REGULAR_BED_CAPACITY.put("7", 3316);
+//        KEYSET_REGULAR_BED_CAPACITY.put("8", 1861);
+//        KEYSET_REGULAR_BED_CAPACITY.put("9", 7946);
+
+//        // KW10 (08.03.2022)
+//        KEYSET_REGULAR_BED_CAPACITY.put("#", 37838);
+//        KEYSET_REGULAR_BED_CAPACITY.put("1", 893);
+//        KEYSET_REGULAR_BED_CAPACITY.put("2", 2477);
+//        KEYSET_REGULAR_BED_CAPACITY.put("3", 6623);
+//        KEYSET_REGULAR_BED_CAPACITY.put("4", 7110);
+//        KEYSET_REGULAR_BED_CAPACITY.put("5", 2422);
+//        KEYSET_REGULAR_BED_CAPACITY.put("6", 5206);
+//        KEYSET_REGULAR_BED_CAPACITY.put("7", 3300);
+//        KEYSET_REGULAR_BED_CAPACITY.put("8", 1861);
+//        KEYSET_REGULAR_BED_CAPACITY.put("9", 7946);
+
+        // KW11 (15.03.2022)
+//        double mult = 1.0;
+//        KEYSET_REGULAR_BED_CAPACITY.put("#", (int) (37816 * mult));
+//        KEYSET_REGULAR_BED_CAPACITY.put("1", (int) (893 * mult));  // Burgenland
+//        KEYSET_REGULAR_BED_CAPACITY.put("2", (int) (2467 * mult)); // Kärnten
+//        KEYSET_REGULAR_BED_CAPACITY.put("3", (int) (6634 * mult)); // Niederösterreich
+//        KEYSET_REGULAR_BED_CAPACITY.put("4", (int) (7110 * mult)); // Oberösterreich
+//        KEYSET_REGULAR_BED_CAPACITY.put("5", (int) (2393 * mult)); // Salzburg
+//        KEYSET_REGULAR_BED_CAPACITY.put("6", (int) (5206 * mult)); // Steiermark
+//        KEYSET_REGULAR_BED_CAPACITY.put("7", (int) (3306 * mult)); // Tirol
+//        KEYSET_REGULAR_BED_CAPACITY.put("8", (int) (1861 * mult)); // Vorarlberg
+//        KEYSET_REGULAR_BED_CAPACITY.put("9", (int) (7946 * mult)); // Wien
+
+        double mult = 1.0;
+        KEYSET_REGULAR_BED_CAPACITY.put("#", (int) (37772 * mult));
+        KEYSET_REGULAR_BED_CAPACITY.put("1", (int) (893 * mult));  // Burgenland
+        KEYSET_REGULAR_BED_CAPACITY.put("2", (int) (2473 * mult)); // Kärnten
+        KEYSET_REGULAR_BED_CAPACITY.put("3", (int) (6596 * mult)); // Niederösterreich        
+        KEYSET_REGULAR_BED_CAPACITY.put("4", (int) (7110 * mult)); // Oberösterreich
+        KEYSET_REGULAR_BED_CAPACITY.put("5", (int) (2385 * mult)); // Salzburg
+        KEYSET_REGULAR_BED_CAPACITY.put("6", (int) (5171 * mult)); // Steiermark
+        KEYSET_REGULAR_BED_CAPACITY.put("7", (int) (3337 * mult)); // Tirol
+        KEYSET_REGULAR_BED_CAPACITY.put("8", (int) (1861 * mult)); // Vorarlberg
+        KEYSET_REGULAR_BED_CAPACITY.put("9", (int) (7946 * mult)); // Wien        
+
     }
 
     public static final String URL__HOSPITALIZATION = "https://covid19-dashboard.ages.at/data/Hospitalisierung.csv";
 
     public static final File FILE_HOSPITALIZATION = new File(Storage.FOLDER___WORK, "hopitalization_bezirk.csv");
-    public static final File FILE____FORECAST_REG = new File(Storage.FOLDER___WORK, "forecast_reg_20220301.csv");
-    public static final File FILE____FORECAST_ICU = new File(Storage.FOLDER___WORK, "forecast_icu_20220301.csv");
+    public static final File FILE____FORECAST_REG = new File(Storage.FOLDER___WORK, "forecast_reg_20220315.csv");
+    public static final File FILE____FORECAST_ICU = new File(Storage.FOLDER___WORK, "forecast_icu_20220315.csv");
 
     // 24.01.2021 00:00:00;1;Burgenland;38;52;7;37;8;361192
     public static final SimpleDateFormat DATE_FORMAT_____FILE = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");

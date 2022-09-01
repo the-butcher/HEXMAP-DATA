@@ -42,6 +42,8 @@ public class Population {
 
         KEYSET_GKZ_OVERRIDE.put("900", "9##");
 
+        KEYSET_GKZ_OVERRIDE.put("70370", "70327");
+
 //        KEYSET_GKZ_OVERRIDE.put("90101", "90001");
 //        KEYSET_GKZ_OVERRIDE.put("90201", "90002");
 //        KEYSET_GKZ_OVERRIDE.put("90301", "90003");

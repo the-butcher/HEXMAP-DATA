@@ -15,11 +15,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.igorion.app.impl.C19Application;
 import com.igorion.hexmap.location.Location;
-import com.igorion.hexmap.twitter.IncidenceTweetFormatter;
 import com.igorion.http.IHttpRequest;
 import com.igorion.http.IHttpResponse;
 import com.igorion.http.impl.HttpRequest;
@@ -42,13 +40,13 @@ import com.igorion.util.impl.Storage;
  * @since 19.02.2022
  *
  */
-public class HexmapControlParser00IncidenceEms {
+public class HexmapControlParser06Tests {
 
     public static final String TOTAL = "TOTAL";
 
-    public static final String URL_CASE = "https://info.gesundheitsministerium.gv.at/data/timeline-faelle-ems.csv";
+    public static final String URL_TEST = "https://info.gesundheitsministerium.gv.at/data/timeline-faelle-bundeslaender.csv";
 
-    public static final File FILE___CASE = new File(Storage.FOLDER___WORK, "cases_ems.csv");
+    public static final File FILE___TEST = new File(Storage.FOLDER___WORK, "tests_province.csv");
     public static final File FILE____POP = new File(Storage.FOLDER___WORK, "hexmap-base-population_00_99_median.csv");
 
     public static final SimpleDateFormat DATE_FORMAT_____CASE = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
@@ -89,23 +87,21 @@ public class HexmapControlParser00IncidenceEms {
 
         JsonTypeImplHexmapDataRoot dataRoot = new JsonTypeImplHexmapDataRoot("temp.json");
 
-        loadMiscData(URL_CASE, FILE___CASE);
+        loadMiscData(URL_TEST, FILE___TEST);
         parseCaseData(dataRoot);
 
-        JsonTypeImplHexmapDataRoot fileRoot = new JsonTypeImplHexmapDataRoot("hexmap-data-00-incidence-ems.json");
+        JsonTypeImplHexmapDataRoot fileRoot = new JsonTypeImplHexmapDataRoot("hexmap-data-06-tests-province.json");
         fileRoot.addKeyset("Bundesland", Location.KEYSET_PROVINCE);
-        fileRoot.addIdx("cases", 0, 7000, false);
+        fileRoot.addIdx("pcr", 0, 20000, false);
+        fileRoot.addIdx("antigen", 0, 20000, false);
+        fileRoot.addIdx("all", 0, 20000, false);
         fileRoot.setIndx(0);
 
         List<String> dateKeys = new ArrayList<>(dataRoot.getDateKeys());
-        List<String> loggableDates = new ArrayList<>();
-        loggableDates.add(dateKeys.get(dateKeys.size() - 1));
-        loggableDates.add(dateKeys.get(dateKeys.size() - 8));
-        loggableDates.add(dateKeys.get(dateKeys.size() - 15));
-
         for (int i = 7; i < dateKeys.size(); i++) {
 
             String dateKey00 = dateKeys.get(i);
+            String dateKeyM7 = dateKeys.get(i - 7);
 
             List<String> keys00 = new ArrayList<>(dataRoot.getKeys(dateKey00));
             keys00.sort((a, b) -> {
@@ -114,22 +110,37 @@ public class HexmapControlParser00IncidenceEms {
 
             for (String key07 : keys00) {
 
-                double value00 = dataRoot.getValue(dateKey00, key07, 0);
-                double population0099 = population0099ByGkz.get(key07); //  dataRoot.getValue(dateKey00, key07, 1);
-                double populationMedi = populationMediByGkz.get(key07); //  dataRoot.getValue(dateKey00, key07, 1);
+                double valuePcr00 = dataRoot.getValue(dateKey00, key07, 0);
+                double valuePcrM7 = dataRoot.getValue(dateKeyM7, key07, 0);
 
-                fileRoot.addData(dateKey00, key07, 0, value00);
-                fileRoot.setPopulation(key07, population0099, populationMedi);
+                double valueAg00 = dataRoot.getValue(dateKey00, key07, 1);
+                double valueAgM7 = dataRoot.getValue(dateKeyM7, key07, 1);
+
+                double valueAll00 = dataRoot.getValue(dateKey00, key07, 2);
+                double valueAllM7 = dataRoot.getValue(dateKeyM7, key07, 2);
+
+                double valuePos00 = dataRoot.getValue(dateKey00, key07, 3);
+                double valuePosM7 = dataRoot.getValue(dateKeyM7, key07, 3);
+
+                double population0099 = population0099ByGkz.get(key07); //  dataRoot.getValue(dateKey00, key07, 1);
+
+                // double populationMedi = populationMediByGkz.get(key07); //  dataRoot.getValue(dateKey00, key07, 1);
+
+                fileRoot.addData(dateKey00, key07, 0, (valuePos00 - valuePosM7) / (valuePcr00 - valuePcrM7));
+                fileRoot.addData(dateKey00, key07, 1, (valuePos00 - valuePosM7) / (valueAg00 - valueAgM7));
+                fileRoot.addData(dateKey00, key07, 2, (valuePos00 - valuePosM7) / (valueAll00 - valueAllM7));
+
+//                fileRoot.addData(dateKey00, key07, 0, (valuePcr00 - valuePcrM7) / 0.00007 / population0099);
+//                fileRoot.addData(dateKey00, key07, 1, (valueAg00 - valueAgM7) / 0.00007 / population0099);
+//                fileRoot.addData(dateKey00, key07, 2, (valueAll00 - valueAllM7) / 0.00007 / population0099);
+//
+//                fileRoot.setPopulation(key07, population0099);
 
             }
 
         }
 
         Storage.store(fileRoot);
-        for (Entry<String, String> locationEntry : Location.KEYSET_PROVINCE.entrySet()) {
-            new IncidenceTweetFormatter(locationEntry.getKey(), locationEntry.getValue() + ", Fallzahlen laut EMS Morgenmeldung.").format(fileRoot);
-        }
-//        new IncidenceTweetFormatter("#", "Österreich, Fallzahlen laut EMS Morgenmeldung.").format(fileRoot);
 
     }
 
@@ -139,14 +150,15 @@ public class HexmapControlParser00IncidenceEms {
 
     protected static void parseCaseData(JsonTypeImplHexmapDataRoot dataRoot) throws Exception {
 
-        try (BufferedReader csvReader = new BufferedReader(new InputStreamReader(new FileInputStream(FILE___CASE), StandardCharsets.UTF_8))) {
+        try (BufferedReader csvReader = new BufferedReader(new InputStreamReader(new FileInputStream(FILE___TEST), StandardCharsets.UTF_8))) {
 
-            IDataSetFactory<String, Long> caseCsvDatasetFactory = new DataSetFactoryImplCsv();
+            IDataSetFactory<String, Long> caseCsvDatasetFactory = new DataSetFactoryImplCsv("(,|;|\t)");
             IDataSet<String, Long> caseCsvDataSet = caseCsvDatasetFactory.createDataSet(csvReader);
             List<IDataEntry<String, Long>> caseCsvRecords = caseCsvDataSet.getEntriesY();
 
             IFieldType<Date> fieldTypeDate = new FieldTypeImplDate(DATE_FORMAT_____CASE, "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\+[0-9]{2}:[0-9]{2}");
 
+//            Map<String, Double> testsPcrLast = new HashMap<>();
             for (IDataEntry<String, Long> caseCsvRecord : caseCsvRecords) {
 
                 Date entryDate = caseCsvRecord.optValue("Datum", fieldTypeDate).orElseThrow();
@@ -155,8 +167,21 @@ public class HexmapControlParser00IncidenceEms {
                     bkz = "#";
                 }
 
-                double exposed = caseCsvRecord.optValue("BestaetigteFaelleEMS", FieldTypes.LONG).orElseThrow().intValue();
-                dataRoot.addData(entryDate, bkz, 0, exposed);
+                double testsPcrCurr = caseCsvRecord.optValue("TestungenPCR", FieldTypes.LONG).orElseThrow().intValue();
+                double testsAgCurr = caseCsvRecord.optValue("TestungenAntigen", FieldTypes.LONG).orElseThrow().intValue();
+                double testsAllCurr = caseCsvRecord.optValue("Testungen", FieldTypes.LONG).orElseThrow().intValue();
+                double testsPositive = caseCsvRecord.optValue("BestaetigteFaelleBundeslaender", FieldTypes.LONG).orElseThrow().intValue();
+
+                dataRoot.addData(entryDate, bkz, 0, testsPcrCurr);
+                dataRoot.addData(entryDate, bkz, 1, testsAgCurr);
+                dataRoot.addData(entryDate, bkz, 2, testsAllCurr);
+                dataRoot.addData(entryDate, bkz, 3, testsPositive);
+
+//                double testsPcrCurr = caseCsvRecord.optValue("TestungenPCR", FieldTypes.LONG).orElseThrow().intValue();
+//                if (testsPcrLast.containsKey(bkz)) {
+//                    dataRoot.addData(entryDate, bkz, 0, testsPcrCurr - testsPcrLast.get(bkz));
+//                }
+//                testsPcrLast.put(bkz, testsPcrCurr);
 
             } // for (IDataEntry<String, Long> caseCsvRecord : caseCsvRecords)
 

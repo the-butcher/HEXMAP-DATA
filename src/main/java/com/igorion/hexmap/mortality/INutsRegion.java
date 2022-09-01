@@ -6,6 +6,8 @@ public interface INutsRegion {
 
     String getNuts();
 
+    String getName();
+
     void addPopulation(EAgeGroup ageGroup, Date date, int population);
 
     /**

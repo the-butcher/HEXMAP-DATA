@@ -24,7 +24,7 @@ public class MortalityImpl implements IMortality {
     }
 
     @Override
-    public void addDeaths(EAgeGroup ageGroup, Date date, int deaths1) {
+    public void addDeaths(EAgeGroup ageGroup, Date date, double deaths1) {
         this.deaths.addValue(ageGroup, date, deaths1);
 
     }

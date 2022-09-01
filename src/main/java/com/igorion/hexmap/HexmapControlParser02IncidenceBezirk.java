@@ -97,8 +97,8 @@ public class HexmapControlParser02IncidenceBezirk {
         }
 
         fileRoot.addKeyset("Bezirk", districtMapSorted);
-        fileRoot.addIdx("cases", 0, 5000, false);
-        fileRoot.addIdx("fatal", 0, 5000, false);
+        fileRoot.addIdx("cases", 0, 7000, false);
+        fileRoot.addIdx("fatal", 0, 7000, false);
         fileRoot.setIndx(0);
 
         List<String> dateKeys = new ArrayList<>(dataRoot.getDateKeys());

@@ -8,16 +8,23 @@ import com.igorion.hexmap.mortality.INutsRegion;
 public class NutsRegionImpl implements INutsRegion {
 
     private final String nuts;
+    private final String name;
     private final ValueDateMap populations;
 
-    public NutsRegionImpl(String nuts) {
+    public NutsRegionImpl(String nuts, String name) {
         this.nuts = nuts;
+        this.name = name;
         this.populations = new ValueDateMap();
     }
 
     @Override
     public String getNuts() {
         return this.nuts;
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 
     @Override

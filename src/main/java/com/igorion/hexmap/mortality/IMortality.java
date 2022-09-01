@@ -4,11 +4,64 @@ import java.util.Date;
 
 public interface IMortality {
 
-    void addDeaths(EAgeGroup ageGroup, Date date, int deaths);
+    static final Date REFERENCE_DATE = new Date(1640995200000L); // Date and time (GMT): Saturday, January 1, 2022 0:00:00
+
+    void addDeaths(EAgeGroup ageGroup, Date date, double deaths);
 
     double getWeeklyDeaths(EAgeGroup ageGroup, Date date);
 
     double getYearlyDeaths(EAgeGroup ageGroup, Date date);
+
+    default double getReferenceMortality(INutsRegion region, Date normalizeDate) {
+
+        double totalReferencePopulation = 0;
+        double totalReferenceDeaths = 0;
+
+        for (EAgeGroup ageGroup : EAgeGroup.values()) {
+
+            if (ageGroup == EAgeGroup.ETOTAL) {
+                continue;
+            }
+
+            double referencePopulation = region.getPopulation(ageGroup, REFERENCE_DATE);
+            double referenceDeaths = getWeeklyDeaths(ageGroup, normalizeDate);
+
+            totalReferencePopulation += referencePopulation;
+            totalReferenceDeaths += referenceDeaths;
+
+        }
+
+        return totalReferenceDeaths * 100000 / totalReferencePopulation;
+
+    }
+
+    default double getNormalizedMortality(INutsRegion region, Date normalizeDate) {
+
+        double totalReferencePopulation = 0;
+        double totalReferenceDeaths = 0;
+
+        for (EAgeGroup ageGroup : EAgeGroup.values()) {
+
+            if (ageGroup == EAgeGroup.ETOTAL) {
+                continue;
+            }
+
+            // get population at reference date and normalizeable date
+            double referencePopulation = region.getPopulation(ageGroup, REFERENCE_DATE);
+            double normalizePopulation = region.getPopulation(ageGroup, normalizeDate);
+
+            // get actual deaths at normalizeable date
+            double normalizeDeaths = getWeeklyDeaths(ageGroup, normalizeDate);
+            double referenceDeaths = normalizeDeaths * (referencePopulation / normalizePopulation);
+
+            totalReferencePopulation += referencePopulation;
+            totalReferenceDeaths += referenceDeaths;
+
+        }
+
+        return totalReferenceDeaths * 100000 / totalReferencePopulation;
+
+    }
 
     /**
      * get the mortality for this {@link INutsRegion}, {@link EAgeGroup} and {@link Date} (the date's month and day are relevant while the year will be ignored

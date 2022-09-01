@@ -6,8 +6,6 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,7 +35,7 @@ public class NutsRegions {
         // no public instance
     }
 
-    protected static void loadNutsRegions(File gkzPopulationFile) {
+    protected static void loadNutsRegions(File gkzPopulationFile, EAgeGroup... ageGroups) {
 
         try (BufferedReader csvReader = new BufferedReader(new InputStreamReader(new FileInputStream(gkzPopulationFile), StandardCharsets.UTF_8))) {
 
@@ -49,9 +47,10 @@ public class NutsRegions {
 
                 Date date = csvRecord.optValue("datum", FIELD_TYPE_DATE_CASE).orElseThrow(() -> new RuntimeException("failed to find datum"));
                 String nuts = csvRecord.optValue("gkz", FieldTypes.STRING).orElseThrow();
-                INutsRegion nutsRegion = NUTS_REGIONS.computeIfAbsent(nuts, n -> new NutsRegionImpl(n));
+                String name = csvRecord.optValue("gkn", FieldTypes.STRING).orElseGet(() -> "");
+                INutsRegion nutsRegion = NUTS_REGIONS.computeIfAbsent(nuts, n -> new NutsRegionImpl(nuts, name));
 
-                for (EAgeGroup ageGroup : EAgeGroup.values()) {
+                for (EAgeGroup ageGroup : ageGroups) {
                     if (ageGroup == EAgeGroup.ETOTAL) {
                         continue;
                     }
@@ -70,11 +69,11 @@ public class NutsRegions {
 
     }
 
-    public static List<INutsRegion> getRegions(File gkzPopulationFile) {
+    public static Map<String, INutsRegion> getRegions(File gkzPopulationFile, EAgeGroup... ageGroups) {
         if (NUTS_REGIONS.isEmpty()) {
-            loadNutsRegions(gkzPopulationFile);
+            loadNutsRegions(gkzPopulationFile, ageGroups);
         }
-        return Collections.unmodifiableList(new ArrayList<>(NUTS_REGIONS.values()));
+        return NUTS_REGIONS;
     }
 
 }

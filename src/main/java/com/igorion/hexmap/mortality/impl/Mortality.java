@@ -58,14 +58,14 @@ public class Mortality {
                     }
 
                     String ageGroupRaw = csvRecord.optValue("AGE", FieldTypes.STRING).orElseThrow(() -> new RuntimeException("failed to resolve AGE"));
-                    EAgeGroup ageGroup = EAgeGroup.optAgeGroup(ageGroupRaw).orElseThrow(() -> new RuntimeException("failed to resolve age group (" + ageGroupRaw + ")"));
+                    EAgeGroup ageGroup = EAgeGroup.optAgeGroupByName(ageGroupRaw).orElseThrow(() -> new RuntimeException("failed to resolve age group (" + ageGroupRaw + ")"));
 
                     String nuts3 = csvRecord.optValue("NUTS3", FieldTypes.STRING).orElseThrow(() -> new RuntimeException("failed to resolve NUTS3"));
                     String deathsRaw = csvRecord.optValue(dateField, FieldTypes.STRING).orElseThrow(() -> new RuntimeException("failed to resolve date (" + dateField + ")"));
                     int deaths = Integer.parseInt(deathsRaw);
 
                     MORTALITY.computeIfAbsent(nuts3, n -> new MortalityImpl()).addDeaths(ageGroup, toThursdayInWeek(year, week), deaths);
-                    MORTALITY.computeIfAbsent(nuts3, n -> new MortalityImpl()).addDeaths(EAgeGroup.ETOTAL, toThursdayInWeek(year, week), deaths);
+                    // MORTALITY.computeIfAbsent(nuts3, n -> new MortalityImpl()).addDeaths(EAgeGroup.ETOTAL, toThursdayInWeek(year, week), deaths);
 
                 }
 
@@ -86,7 +86,7 @@ public class Mortality {
         return Optional.ofNullable(MORTALITY.get(nuts3));
     }
 
-    protected static Date toThursdayInWeek(int year, int week) {
+    public static Date toThursdayInWeek(int year, int week) {
         LocalDate date = LocalDate.of(year, Month.JANUARY, 10);
         LocalDate dayInWeek = date.with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week);
         LocalDate localDate = dayInWeek.with(DayOfWeek.THURSDAY);

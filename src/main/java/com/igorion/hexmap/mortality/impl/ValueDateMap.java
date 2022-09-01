@@ -11,19 +11,19 @@ import com.igorion.util.impl.DateUtil;
 
 public class ValueDateMap {
 
-    private final Map<EAgeGroup, Map<Date, Integer>> valuesByDateAndAge;
+    private final Map<EAgeGroup, Map<Date, Double>> valuesByDateAndAge;
 
     public ValueDateMap() {
         this.valuesByDateAndAge = new LinkedHashMap<>();
     }
 
-    public void addValue(EAgeGroup ageGroup, Date date, int value) {
+    public void addValue(EAgeGroup ageGroup, Date date, double value) {
         this.valuesByDateAndAge.computeIfAbsent(ageGroup, g -> new LinkedHashMap<>()).compute(date, (k, v) -> v != null ? v + value : value);
     }
 
     public double getYearlyValue(EAgeGroup ageGroup, Date date) {
 
-        Map<Date, Integer> valuesByDate = this.valuesByDateAndAge.get(ageGroup);
+        Map<Date, Double> valuesByDate = this.valuesByDateAndAge.get(ageGroup);
         List<Date> dateList = new ArrayList<>(valuesByDate.keySet());
 
         double value = 0;
@@ -40,7 +40,7 @@ public class ValueDateMap {
 
     protected double getWeeklyValueInternal(EAgeGroup ageGroup, Date date) {
 
-        Map<Date, Integer> valuesByDate = this.valuesByDateAndAge.get(ageGroup);
+        Map<Date, Double> valuesByDate = this.valuesByDateAndAge.get(ageGroup);
         List<Date> dateList = new ArrayList<>(valuesByDate.keySet());
         dateList.sort((a, b) -> a.compareTo(b));
 
@@ -68,7 +68,7 @@ public class ValueDateMap {
         Date dateM = new Date(date.getTime() - DateUtil.MILLISECONDS_PER__DAY * 7);
         Date dateP = new Date(date.getTime() + DateUtil.MILLISECONDS_PER__DAY * 7);
         return getWeeklyValueInternal(ageGroup, dateM) * 0.25 + getWeeklyValueInternal(ageGroup, date) * 0.5 + getWeeklyValueInternal(ageGroup, dateP) * 0.25;
-        // return getWeeklyValueInternal(ageGroup, date);
+//        return getWeeklyValueInternal(ageGroup, date);
 
     }
 
