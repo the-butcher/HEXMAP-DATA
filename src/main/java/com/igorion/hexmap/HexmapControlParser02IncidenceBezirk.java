@@ -131,7 +131,7 @@ public class HexmapControlParser02IncidenceBezirk {
 //        new ObjectMapper().writeValue(new File(hexmapFilePath), fileRoot); // .writerWithDefaultPrettyPrinter()
 
         Storage.store(fileRoot);
-        new IncidenceTweetFormatter("###", "Österreich, Fallzahlen nach Bezirken.").format(fileRoot);
+        new IncidenceTweetFormatter("###", "Österreich, Fallzahlen nach Bezirken laut AGES.").format(fileRoot);
 
     }
 

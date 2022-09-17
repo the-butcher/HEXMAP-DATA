@@ -51,7 +51,7 @@ public class MortalityParserDistrict01 {
     static final Date POP_DATE_A = new Date(2020 - 1900, 0, 1);
     // static final Date POP_DATE_B = new Date(2022 - 1900, 0, 1);
 //    static final Date POP_DATE_B = new Date(2022 - 1900, 2, 10);
-    static final Date POP_DATE_B = toDate("KALW-202225");
+    static final Date POP_DATE_B = toDate("KALW-202231");
     static final Date POP_DATE_C = new Date(2022 - 1900, 11, 1);
 
     static final Date POP_DATE_STATS_A = new Date(POP_DATE_A.getTime() - DateUtil.MILLISECONDS_PER__DAY * 7 * 12);
